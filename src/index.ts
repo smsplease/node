@@ -54,12 +54,23 @@ export async function receive(
     {
       method: 'POST',
       headers: {
-        'x-auth-token': session.apiKey
+        'x-api-key': session.apiKey
       }
     }
   )
 
+  if (response.status === 400) {
+    throw new Error(`Unknown service: ${receiveFrom}`)
+  }
+
+  const timer = setTimeout(() => {
+    if (shouldPoll) {
+      throw new Error(`Timeout exceed while waiting for messages: ${options.timeout}`)
+    }
+  }, options.timeout)
+
   session.close = () => {
+    clearTimeout(timer)
     shouldPoll = true
   }
 
@@ -67,12 +78,6 @@ export async function receive(
   const token = json.data.token
   const inbox = new EventEmitter()
   inbox.on('message', handleMessage)
-
-  setTimeout(() => {
-    if (shouldPoll) {
-      throw new Error(`Timeout exceed while waiting for messages: ${options.timeout}`)
-    }
-  }, options.timeout)
 
   async function pollInbox() {
     if (!shouldPoll) {

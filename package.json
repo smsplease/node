@@ -1,0 +1,16 @@
+{
+  "name": "@smsplease/node",
+  "version": "0.0.1",
+  "description": "smsplease.com Node.js SDK",
+  "type": "module",
+  "exports": "./lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node lib/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^4.7.0-beta"
+  }
+}
